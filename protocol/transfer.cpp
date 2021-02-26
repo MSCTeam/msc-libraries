@@ -43,6 +43,13 @@ void transfer_operation::validate()const
    FC_ASSERT( amount.amount > 0 );
 }
 
+void transaction::validate() const
+{
+   FC_ASSERT( operations.size() > 0, "A transaction must have at least one operation", ("trx",*this) );
+   for( const auto& op : operations )
+      operation_validate(op);
+}
+
 
 
 share_type override_transfer_operation::calculate_fee( const fee_parameters_type& schedule )const
