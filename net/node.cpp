@@ -378,6 +378,12 @@ namespace graphene { namespace net { namespace detail {
       }
     }
 
+    void message_oriented_connection_impl::close_connection()
+    {
+      VERIFY_CORRECT_THREAD();
+      _sock.close();
+    }
+
     void node_impl::p2p_network_connect_loop()
     {
       VERIFY_CORRECT_THREAD();
