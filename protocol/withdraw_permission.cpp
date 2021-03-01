@@ -67,6 +67,13 @@ void withdraw_permission_delete_operation::validate() const
    FC_ASSERT( withdraw_from_account != authorized_account );
 }
 
+void witness_update_operation::validate() const
+{
+   FC_ASSERT(fee.amount >= 0);
+   if( new_url.valid() )
+       FC_ASSERT(new_url->size() < GRAPHENE_MAX_URL_LENGTH );
+}
+
 } } // graphene::protocol
 
 GRAPHENE_IMPLEMENT_EXTERNAL_SERIALIZATION( graphene::protocol::withdraw_permission_create_operation::fee_parameters_type )
