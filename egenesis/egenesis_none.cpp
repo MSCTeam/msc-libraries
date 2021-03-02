@@ -40,6 +40,29 @@ void compute_egenesis_json( std::string& result )
    result = "";
 }
 
+void load_genesis(
+   const boost::program_options::variables_map& options,
+   egenesis_info& info
+   )
+{
+   if( options.count("genesis-json") )
+   {
+      fc::path genesis_json_filename = get_path( options, "genesis-json" );
+      std::cerr << "embed_genesis:  Reading genesis from file " << genesis_json_filename.preferred_string() << "\n";
+      info.genesis_json = std::string();
+      read_file_contents( genesis_json_filename, *info.genesis_json );
+   }
+   else
+      info.genesis = graphene::app::detail::create_example_genesis();
+
+   if( options.count("chain-id") )
+   {
+      std::string chain_id_str = options["chain-id"].as<std::string>();
+      std::cerr << "embed_genesis:  Genesis ID from argument is " << chain_id_str << "\n";
+      info.chain_id = chain_id_str;
+   }
+}
+
 fc::sha256 get_egenesis_json_hash()
 {
    return fc::sha256::hash( "" );
