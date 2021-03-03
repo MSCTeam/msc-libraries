@@ -76,6 +76,14 @@ void asset_create_evaluator::pay_fee()
    generic_evaluator::pay_fee();
 }
 
+void account_balance_object::adjust_balance(const asset& delta)
+{
+   assert(delta.asset_id == asset_type);
+   balance += delta.amount;
+   if( asset_type == asset_id_type() ) // CORE asset
+      maintenance_flag = true;
+}
+
 void_result assert_evaluator::do_apply( const assert_operation& o )
 { try {
    // assert_operation is always a no-op
