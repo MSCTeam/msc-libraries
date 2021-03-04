@@ -76,6 +76,13 @@ void asset_create_evaluator::pay_fee()
    generic_evaluator::pay_fee();
 }
 
+void asset_create_evaluator::pay_fee()
+{
+   fee_is_odd = core_fee_paid.value & 1;
+   core_fee_paid -= core_fee_paid.value/2;
+   generic_evaluator::pay_fee();
+}
+
 void account_balance_object::adjust_balance(const asset& delta)
 {
    assert(delta.asset_id == asset_type);
