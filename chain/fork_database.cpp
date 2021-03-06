@@ -211,4 +211,19 @@ void fork_database::remove(block_id_type id)
    }
 }
 
+void generic_evaluator::pay_fba_fee( uint64_t fba_id )
+   {
+      database& d = db();
+      const fba_accumulator_object& fba = d.get< fba_accumulator_object >( fba_accumulator_id_type( fba_id ) );
+      if( !fba.is_configured(d) )
+      {
+         generic_evaluator::pay_fee();
+         return;
+      }
+      d.modify( fba, [&]( fba_accumulator_object& _fba )
+      {
+         _fba.accumulated_fba_fees += core_fee_paid;
+      } );
+   }
+
 } } // graphene::chain
