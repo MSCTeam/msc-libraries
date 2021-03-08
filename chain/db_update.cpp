@@ -102,6 +102,11 @@ void database::update_signing_witness(const witness_object& signing_witness, con
    } );
 }
 
+void database::notify_applied_block( const signed_block& block )
+{
+   GRAPHENE_TRY_NOTIFY( applied_block, block )
+}
+
 void database::update_last_irreversible_block()
 {
    const global_property_object& gpo = get_global_properties();
