@@ -59,6 +59,13 @@ void_result vesting_balance_create_evaluator::do_evaluate( const vesting_balance
    return void_result();
 } FC_CAPTURE_AND_RETHROW( (op) ) }
 
+void_result transfer_evaluator::do_apply( const transfer_operation& o )
+{ try {
+   db().adjust_balance( o.from, -o.amount );
+   db().adjust_balance( o.to, o.amount );
+   return void_result();
+} FC_CAPTURE_AND_RETHROW( (o) ) }
+
 struct init_policy_visitor
 {
    typedef void result_type;
