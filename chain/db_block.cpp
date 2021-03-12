@@ -757,6 +757,16 @@ void database::add_checkpoints( const flat_map<uint32_t,block_id_type>& checkpts
       _checkpoints[i.first] = i.second;
 }
 
+void database::apply_debug_updates()
+{
+   block_id_type head_id = head_block_id();
+   auto it = _node_property_object.debug_updates.find( head_id );
+   if( it == _node_property_object.debug_updates.end() )
+      return;
+   for( const fc::variant_object& update : it->second )
+      debug_apply_update( *this, update );
+}
+
 bool database::before_last_checkpoint()const
 {
    return (_checkpoints.size() > 0) && (_checkpoints.rbegin()->first >= head_block_num());
