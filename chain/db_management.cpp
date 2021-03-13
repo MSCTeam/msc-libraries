@@ -239,6 +239,21 @@ void database::open(
    FC_CAPTURE_LOG_AND_RETHROW( (data_dir) )
 }
 
+void database::cancel_bid(const collateral_bid_object& bid, bool create_virtual_op)
+{
+   adjust_balance(bid.bidder, bid.inv_swan_price.base);
+
+   if( create_virtual_op )
+   {
+      bid_collateral_operation vop;
+      vop.bidder = bid.bidder;
+      vop.additional_collateral = bid.inv_swan_price.base;
+      vop.debt_covered = asset( 0, bid.inv_swan_price.quote.asset_id );
+      push_applied_operation( vop );
+   }
+   remove(bid);
+}
+
 void database::close(bool rewind)
 {
    if (!_opened)
