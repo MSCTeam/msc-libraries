@@ -81,6 +81,11 @@ void_result transfer_evaluator::do_apply( const transfer_operation& o )
    return void_result();
 } FC_CAPTURE_AND_RETHROW( (o) ) }
 
+void evaluate_special_authority( const database& db, const special_authority& a )
+{
+   special_authority_evaluate_visitor vtor( db );
+   a.visit( vtor );
+}
 
 
 void_result override_transfer_evaluator::do_evaluate( const override_transfer_operation& op )
