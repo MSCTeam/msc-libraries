@@ -112,6 +112,16 @@ namespace graphene { namespace net {
       }
     }
 
+    void peer_connection::on_message( message_oriented_connection* originating_connection, const message& received_message )
+    {
+      VERIFY_CORRECT_THREAD();
+      _currently_handling_message = true;
+      BOOST_SCOPE_EXIT(this_) {
+        this_->_currently_handling_message = false;
+      } BOOST_SCOPE_EXIT_END
+      _node->on_message( this, received_message );
+    }
+
     void peer_database_impl::close()
     {
       std::vector<potential_peer_record> peer_records;
