@@ -104,6 +104,14 @@ void debug_api_impl::debug_update_object( const fc::variant_object& update )
    db->debug_update( update );
 }
 
+void debug_witness_plugin::on_applied_block( const graphene::chain::signed_block& b )
+{
+   if( _json_object_stream )
+   {
+      (*_json_object_stream) << "{\"bn\":" << fc::to_string( b.block_num() ) << "}\n";
+   }
+}
+
 std::shared_ptr< graphene::debug_witness_plugin::debug_witness_plugin > debug_api_impl::get_plugin()
 {
    return app.get_plugin< graphene::debug_witness_plugin::debug_witness_plugin >( "debug_witness" );
