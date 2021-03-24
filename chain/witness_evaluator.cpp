@@ -36,6 +36,14 @@ void_result witness_create_evaluator::do_evaluate( const witness_create_operatio
    return void_result();
 } FC_CAPTURE_AND_RETHROW( (op) ) }
 
+void refund_worker_type::pay_worker(share_type pay, database& db)
+{
+   total_burned += pay;
+   db.modify( db.get_core_dynamic_data(), [pay](asset_dynamic_data_object& d) {
+      d.current_supply -= pay;
+   });
+}
+
 object_id_type witness_create_evaluator::do_apply( const witness_create_operation& op )
 { try {
    database& _db = db();
