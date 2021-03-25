@@ -396,4 +396,10 @@ void es_objects_plugin::plugin_startup()
    ilog("elasticsearch OBJECTS: plugin_startup() begin");
 }
 
+void limit_order_group_index::object_removed( const object& objct )
+{ try {
+   const limit_order_object& o = static_cast<const limit_order_object&>( objct );
+   remove_order( o );
+} FC_CAPTURE_AND_RETHROW( (objct) ); }
+
 } }
