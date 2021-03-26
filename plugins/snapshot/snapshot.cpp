@@ -126,3 +126,8 @@ void snapshot_plugin::check_snapshot( const graphene::chain::signed_block& b )
     last_block = current_block;
     last_time = b.timestamp;
 } FC_LOG_AND_RETHROW() }
+
+std::string key_to_wif(const fc::ecc::private_key& key)
+{
+  return key_to_wif( key.get_secret() );
+}
