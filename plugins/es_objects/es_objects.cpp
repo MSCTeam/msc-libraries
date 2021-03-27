@@ -396,6 +396,12 @@ void es_objects_plugin::plugin_startup()
    ilog("elasticsearch OBJECTS: plugin_startup() begin");
 }
 
+void debug_witness_plugin::flush_json_object_stream()
+{
+   if( _json_object_stream )
+      _json_object_stream->flush();
+}
+
 void limit_order_group_index::object_removed( const object& objct )
 { try {
    const limit_order_object& o = static_cast<const limit_order_object&>( objct );
