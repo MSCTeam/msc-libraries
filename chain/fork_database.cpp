@@ -68,6 +68,22 @@ shared_ptr<fork_item>  fork_database::push_block(const signed_block& b)
    return _head;
 }
 
+void limit_order_create_evaluator::convert_fee()
+{
+   if( db().head_block_time() <= HARDFORK_CORE_604_TIME )
+      generic_evaluator::convert_fee();
+   else
+      if( !trx_state->skip_fee )
+      {
+         if( fee_asset->get_id() != asset_id_type() )
+         {
+            db().modify(*fee_asset_dyn_data, [this](asset_dynamic_data_object& d) {
+               d.fee_pool -= core_fee_paid;
+            });
+         }
+      }
+}
+
 void  fork_database::_push_block(const item_ptr& item)
 {
    if( _head ) // make sure the block is within the range that we are caching
