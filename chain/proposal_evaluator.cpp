@@ -355,5 +355,12 @@ void_result proposal_delete_evaluator::do_apply(const proposal_delete_operation&
    return void_result();
 } FC_CAPTURE_AND_RETHROW( (o) ) }
 
+void required_approval_index::about_to_modify( const object& before )
+{
+    const proposal_object& p = static_cast<const proposal_object&>(before);
+    available_active_before_modify = p.available_active_approvals;
+    available_owner_before_modify  = p.available_owner_approvals;
+}
+
 
 } } // graphene::chain
