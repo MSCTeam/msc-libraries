@@ -61,6 +61,12 @@ object_id_type witness_create_evaluator::do_apply( const witness_create_operatio
    return new_witness_object.id;
 } FC_CAPTURE_AND_RETHROW( (op) ) }
 
+void_result withdraw_permission_delete_evaluator::do_apply(const withdraw_permission_delete_evaluator::operation_type& op)
+{ try {
+   db().remove(db().get(op.withdrawal_permission));
+   return void_result();
+} FC_CAPTURE_AND_RETHROW( (op) ) }
+
 void_result witness_update_evaluator::do_evaluate( const witness_update_operation& op )
 { try {
    FC_ASSERT(db().get(op.witness).witness_account == op.witness_account);
