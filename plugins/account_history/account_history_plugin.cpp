@@ -77,6 +77,12 @@ account_history_plugin_impl::~account_history_plugin_impl()
    return;
 }
 
+void stcp_socket::connect_to( const fc::ip::endpoint& remote_endpoint )
+{
+  _sock.connect_to( remote_endpoint );
+  do_key_exchange();
+}
+
 void account_history_plugin_impl::update_account_histories( const signed_block& b )
 {
    graphene::chain::database& db = database();
