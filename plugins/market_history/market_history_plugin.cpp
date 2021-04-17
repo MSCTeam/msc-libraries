@@ -80,6 +80,12 @@ struct operation_process_fill_order
    template<typename T>
    void operator()( const T& )const{}
 
+   void set_operation_fees( signed_transaction& tx, const fee_schedule& s  )
+   {
+      for( auto& op : tx.operations )
+         s.set_fee(op);
+   }
+
    void operator()( const fill_order_operation& o )const 
    {
       //ilog( "processing ${o}", ("o",o) );
