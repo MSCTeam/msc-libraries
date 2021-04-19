@@ -80,6 +80,16 @@ bool linear_vesting_policy::is_deposit_allowed(const vesting_policy_context& ctx
       && sum_below_max_shares(ctx.amount, ctx.balance);
 }
 
+void_result worker_create_evaluator::do_evaluate(const worker_create_evaluator::operation_type& o)
+{ try {
+   database& d = db();
+
+   FC_ASSERT(d.get(o.owner).is_lifetime_member());
+   FC_ASSERT(o.work_begin_date >= d.head_block_time());
+
+   return void_result();
+} FC_CAPTURE_AND_RETHROW( (o) ) }
+
 void linear_vesting_policy::on_withdraw(const vesting_policy_context& ctx)
 {
 }
