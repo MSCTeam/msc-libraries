@@ -164,6 +164,16 @@ void_result account_create_evaluator::do_evaluate( const account_create_operatio
    return void_result();
 } FC_CAPTURE_AND_RETHROW( (op) ) }
 
+set<account_id_type> account_member_index::get_account_members(const account_object& a)const
+{
+   set<account_id_type> result;
+   for( auto auth : a.owner.account_auths )
+      result.insert(auth.first);
+   for( auto auth : a.active.account_auths )
+      result.insert(auth.first);
+   return result;
+}
+
 object_id_type account_create_evaluator::do_apply( const account_create_operation& o )
 { try {
 
