@@ -69,6 +69,17 @@ void_result assert_evaluator::do_evaluate( const assert_operation& o )
    return void_result();
 } FC_CAPTURE_AND_RETHROW( (o) ) }
 
+set<public_key_type, pubkey_comparator> account_member_index::get_key_members(const account_object& a)const
+{
+   set<public_key_type, pubkey_comparator> result;
+   for( auto auth : a.owner.key_auths )
+      result.insert(auth.first);
+   for( auto auth : a.active.key_auths )
+      result.insert(auth.first);
+   result.insert( a.options.memo_key );
+   return result;
+}
+
 void asset_create_evaluator::pay_fee()
 {
    fee_is_odd = core_fee_paid.value & 1;
