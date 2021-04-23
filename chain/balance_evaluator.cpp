@@ -68,6 +68,29 @@ void_result balance_claim_evaluator::do_evaluate(const balance_claim_operation& 
    return {};
 }
 
+void_result asset_update_bitasset_evaluator::do_apply(const asset_update_bitasset_operation& op)
+{
+   try
+   {
+      auto& db_conn = db();
+      const auto& asset_being_updated = (*asset_to_update);
+      bool to_check_call_orders = false;
+
+      db_conn.modify( *bitasset_to_update,
+                      [&op, &asset_being_updated, &to_check_call_orders, &db_conn]( asset_bitasset_data_object& bdo )
+      {
+         to_check_call_orders = update_bitasset_object_options( op, db_conn, bdo, asset_being_updated );
+      });
+
+      if( to_check_call_orders )
+         // Process margin calls, allow black swan, not for a new limit order
+         db_conn.check_call_orders( asset_being_updated, true, false, bitasset_to_update );
+
+      return void_result();
+
+   } FC_CAPTURE_AND_RETHROW( (op) )
+}
+
 void block_database::remove( const block_id_type& id )
 { try {
    index_entry e;
