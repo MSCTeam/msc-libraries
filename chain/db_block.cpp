@@ -627,6 +627,30 @@ processed_transaction database::apply_transaction(const signed_transaction& trx,
    return result;
 }
 
+void database::deposit_witness_pay(const witness_object& wit, share_type amount)
+{
+   if( amount == 0 )
+      return;
+
+   optional< vesting_balance_id_type > new_vbid = deposit_lazy_vesting(
+      wit.pay_vb,
+      amount,
+      get_global_properties().parameters.witness_pay_vesting_seconds,
+      vesting_balance_type::witness,
+      wit.witness_account,
+      true );
+
+   if( new_vbid.valid() )
+   {
+      modify( wit, [&]( witness_object& _wit )
+      {
+         _wit.pay_vb = *new_vbid;
+      } );
+   }
+
+   return;
+}
+
 processed_transaction database::_apply_transaction(const signed_transaction& trx)
 { try {
    uint32_t skip = get_node_properties().skip_flags;
