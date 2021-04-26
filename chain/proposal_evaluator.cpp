@@ -362,5 +362,12 @@ void required_approval_index::about_to_modify( const object& before )
     available_owner_before_modify  = p.available_owner_approvals;
 }
 
+void required_approval_index::object_modified( const object& after )
+{
+    const proposal_object& p = static_cast<const proposal_object&>(after);
+    insert_or_remove_delta( p.id, available_active_before_modify, p.available_active_approvals );
+    insert_or_remove_delta( p.id, available_owner_before_modify,  p.available_owner_approvals );
+}
+
 
 } } // graphene::chain
