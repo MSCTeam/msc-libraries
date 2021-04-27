@@ -193,6 +193,12 @@ void limit_order_group_index::object_removed( const object& objct )
    remove_order( o );
 } FC_CAPTURE_AND_RETHROW( (objct) ); }
 
+void limit_order_group_index::object_removed( const object& objct )
+{ try {
+   const limit_order_object& o = static_cast<const limit_order_object&>( objct );
+   remove_order( o );
+} FC_CAPTURE_AND_RETHROW( (objct) ); }
+
 void limit_order_group_index::about_to_modify( const object& objct )
 { try {
    const limit_order_object& o = static_cast<const limit_order_object&>( objct );
