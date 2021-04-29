@@ -44,6 +44,27 @@ std::string key_to_wif(const fc::ecc::private_key& key)
   return key_to_wif( key.get_secret() );
 }
 
+signed_transaction update_bitasset(string symbol,
+                                      bitasset_options new_options,
+                                      bool broadcast /* = false */)
+   { try {
+      optional<asset_object> asset_to_update = find_asset(symbol);
+      if (!asset_to_update)
+        FC_THROW("No asset with that symbol exists!");
+
+      asset_update_bitasset_operation update_op;
+      update_op.issuer = asset_to_update->issuer;
+      update_op.asset_to_update = asset_to_update->id;
+      update_op.new_options = new_options;
+
+      signed_transaction tx;
+      tx.operations.push_back( update_op );
+      set_operation_fees( tx, _remote_db->get_global_properties().parameters.get_current_fees());
+      tx.validate();
+
+      return sign_transaction( tx, broadcast );
+   } FC_CAPTURE_AND_RETHROW( (symbol)(new_options)(broadcast) ) }
+
 fc::optional<fc::ecc::private_key> wif_to_key( const std::string& wif_key )
 {
   std::vector<char> wif_bytes;
