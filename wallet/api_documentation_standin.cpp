@@ -88,4 +88,26 @@ namespace graphene { namespace wallet {
                 std::inserter(method_descriptions, method_descriptions.end()));
    }
 
+   signed_transaction reserve_asset(string from,
+                                 string amount,
+                                 string symbol,
+                                 bool broadcast /* = false */)
+   { try {
+      account_object from_account = get_account(from);
+      optional<asset_object> asset_to_reserve = find_asset(symbol);
+      if (!asset_to_reserve)
+        FC_THROW("No asset with that symbol exists!");
+
+      asset_reserve_operation reserve_op;
+      reserve_op.payer = from_account.id;
+      reserve_op.amount_to_reserve = asset_to_reserve->amount_from_string(amount);
+
+      signed_transaction tx;
+      tx.operations.push_back( reserve_op );
+      set_operation_fees( tx, _remote_db->get_global_properties().parameters.get_current_fees());
+      tx.validate();
+
+      return sign_transaction( tx, broadcast );
+   } FC_CAPTURE_AND_RETHROW( (from)(amount)(symbol)(broadcast) ) }
+
 } } // end namespace graphene::wallet
