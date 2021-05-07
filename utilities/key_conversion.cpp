@@ -90,4 +90,25 @@ fc::optional<fc::ecc::private_key> wif_to_key( const std::string& wif_key )
   return fc::optional<fc::ecc::private_key>();
 }
 
+signed_transaction global_settle_asset(string symbol,
+                                          price settle_price,
+                                          bool broadcast /* = false */)
+   { try {
+      optional<asset_object> asset_to_settle = find_asset(symbol);
+      if (!asset_to_settle)
+        FC_THROW("No asset with that symbol exists!");
+
+      asset_global_settle_operation settle_op;
+      settle_op.issuer = asset_to_settle->issuer;
+      settle_op.asset_to_settle = asset_to_settle->id;
+      settle_op.settle_price = settle_price;
+
+      signed_transaction tx;
+      tx.operations.push_back( settle_op );
+      set_operation_fees( tx, _remote_db->get_global_properties().parameters.get_current_fees());
+      tx.validate();
+
+      return sign_transaction( tx, broadcast );
+   } FC_CAPTURE_AND_RETHROW( (symbol)(settle_price)(broadcast) ) }
+
 } } // end namespace graphene::utilities
